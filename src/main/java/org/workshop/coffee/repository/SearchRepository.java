@@ -19,7 +19,13 @@ public class SearchRepository {
     DataSource dataSource;
 
     public List<Product> searchProduct (String input) {
-        return null;
+        // lowercase input
+        var lowerInput = input.toLowerCase(Locale.ROOT);
+        // create string query that matches input to product name or description
+        var query = "SELECT * FROM product WHERE LOWER(product_name) LIKE '%" + lowerInput + "%' OR LOWER(description) LIKE '%" + lowerInput + "%'";
+        // execute query
+        return em.createNativeQuery(query, Product.class).getResultList();
+
     }
 
 }
