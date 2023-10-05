@@ -31,10 +31,21 @@ public class UploadController {
 
     @PostMapping("/uploadimage")
     public String uploadImage(Model model, @RequestParam("image") MultipartFile file, Principal principal) throws IOException {
+        // get the file and save it to the uploads directory
+        var name = file.getOriginalFilename();
+        var path = Paths.get(UPLOAD_DIRECTORY + File.separator + name);
 
-//        model.addAttribute("msg", "Uploaded images: " + name);
-//        getPerson(model, principal).setProfilePic(name);
-//        personService.savePerson(getPerson(model, principal));
+        // validate that the path is not vulnerable to path traversal
+        if (!path.toFile().getCanonicalPath().startsWith(UPLOAD_DIRECTORY+ File.separator)) {
+            throw new IOException("Invalid path: " + path);
+        }
+
+        Files.write(path, file.getBytes());
+
+
+        model.addAttribute("msg", "Uploaded images: " + name);
+        getPerson(model, principal).setProfilePic(name);
+        personService.savePerson(getPerson(model, principal));
 
         return "person/upload";
     }
