@@ -18,8 +18,13 @@ public class SearchRepository {
     @Autowired
     DataSource dataSource;
 
-    public List<Product> searchProduct (String input) {
-        return null;
+    public List<Product> searchProduct(String input) {
+        //create a sql query using input for name or description
+        var query = "SELECT * FROM product WHERE product_name LIKE '%" + input + "%' OR description LIKE '%" + input + "%'";
+        //create a native query
+        var nativeQuery = em.createNativeQuery(query, Product.class);
+        //return the result list
+        return nativeQuery.getResultList();
     }
 
 }
