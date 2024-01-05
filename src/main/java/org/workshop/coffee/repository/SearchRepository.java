@@ -22,8 +22,9 @@ public class SearchRepository {
         // lowercase the input
         var lowerInput = input.toLowerCase(Locale.ROOT);
 
-        // create a query to match the input to the product name or description
-        var query = em.createNativeQuery("Select * from Product where lower(description) like '%" + lowerInput + "%' OR lower(product_name) like '%" + lowerInput + "%'", Product.class);
+        // create a query using named parameters to match the input to the product name or description
+        var query = em.createQuery("Select p from Product p where lower(p.description) like :input OR lower(p.productName) like :input", Product.class);
+
 
         // get the results of the query
         var resultList = (List<Product>) query.getResultList();
